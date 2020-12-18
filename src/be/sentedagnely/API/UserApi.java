@@ -14,20 +14,18 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import be.sentedagnely.POJO.User;
 
-@Path("/user")
+@Path("user")
 public class UserApi {
 
 	
-	public UserApi() {
-		System.out.println("called");
-	}
-	
+
 	@GET
 	@Path("{id}")
 	@Produces(MediaType.APPLICATION_JSON)
@@ -42,14 +40,20 @@ public class UserApi {
 			Class.forName("oracle.jdbc.driver.OracleDriver");
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
+			System.out.println("///////////////////////////////////////////");
+			e.getMessage();
+			
 			return Response.status(Status.OK).entity(new Erreur(1000)).build();
 		}
+		System.out.println("entrée 4 bis");
 		try {
 			connect = DriverManager.getConnection(chaineConnexion, Const.username, Const.pwd);
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return Response.status(Status.OK).entity(new Erreur(1001)).build();
 		}
+		System.out.println("entrée5");
+		
 		// 2.requete
 
 		String sql = "SELECT * FROM Users WHERE IdUser=?";
@@ -74,6 +78,7 @@ public class UserApi {
 		}
 		// 3. Retourner la réponse
 				return Response.status(Status.OK).entity(user).build();
+	
 	}
 	
 	@Path("create")
