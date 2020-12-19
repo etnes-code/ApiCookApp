@@ -66,6 +66,7 @@ public class UserApi {
 			prepare.setInt(1, id);
 			result = prepare.executeQuery();
 			if (result.next()) {
+				System.out.println("nom trouvé dans la db "+result.getString("name"));
 				user = new User(result.getInt("IdUser"), result.getString("name"), result.getString("firstName"),
 						result.getString("email"), result.getString("password"), result.getString("address"));
 			}else {
@@ -81,7 +82,7 @@ public class UserApi {
 	
 	}
 	
-	@Path("create")
+	@Path("/create")
 	@POST
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response addUser(@DefaultValue("") @FormParam("name") String name,
@@ -94,7 +95,6 @@ public class UserApi {
 		String chaineConnexion = "jdbc:oracle:thin:@//193.190.64.10:1522/XEPDB1";
 		// 1. test des params
 		
-
 		// 2.A connexion à la db
 		try {
 			Class.forName("oracle.jdbc.driver.OracleDriver");
@@ -109,10 +109,12 @@ public class UserApi {
 			return Response.status(Status.OK).entity(new Erreur(1001)).build();
 		}
 		// 2.B requete
-		String sql = "INSERT INTO Users(name,firstName,email,password,address,adminLevel) VALUES(?,?,?,?,?,?)";
+		String sql = "INSERT INTO Users(name,firstName,email,password,address) VALUES(?,?,?,?,?)";
 		PreparedStatement prepare = null;
 		ResultSet result = null;
 		try {
+			System.out.println("valeurs des champs : "+name+" "+firstname+" "+email+" "+password+" "+address);
+			System.out.println("affiche");
 			System.out.println("entrée2");
 			prepare = connect.prepareStatement(sql);
 			prepare.setString(1, name);
@@ -120,24 +122,26 @@ public class UserApi {
 			prepare.setString(3, email);
 			prepare.setString(4, password);
 			prepare.setString(5, address);
-			prepare.setInt(6, 0);
+			result = prepare.executeQuery();
+			prepare.close();
+			result.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return Response.status(Status.OK).entity(new Erreur(10021)).build();
 		}
 		// 2C requete recup id
-		sql = "SELECT id FROM Users WHERE name=? AND firstName=?";
+		sql = "SELECT IdUser FROM users WHERE email like ?";
 		prepare = null;
 		result = null;
 		int id = 0;
-		try {
+		try {			
 			System.out.println("entrée3");
 			prepare = connect.prepareStatement(sql);
-			prepare.setString(1, name);
-			prepare.setString(2, firstname);
+			prepare.setString(1, email);
+
 			result = prepare.executeQuery();
 			if (result.next()) {
-				id = result.getInt(1);
+				id = result.getInt("IdUser");
 			} else {
 				return Response.status(Status.OK).entity(new Erreur(2001)).build();
 			}
