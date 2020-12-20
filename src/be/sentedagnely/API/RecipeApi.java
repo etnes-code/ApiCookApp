@@ -21,7 +21,7 @@ import javax.ws.rs.core.Response.Status;
 import be.sentedagnely.POJO.Recipe;
 import be.sentedagnely.POJO.User;
 
-@Path("/recipe")
+@Path("recipe")
 public class RecipeApi {
 	
 	@GET
