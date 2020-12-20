@@ -24,8 +24,6 @@ import be.sentedagnely.POJO.User;
 @Path("user")
 public class UserApi {
 
-	
-
 	@GET
 	@Path("{id}")
 	@Produces(MediaType.APPLICATION_JSON)
@@ -34,7 +32,9 @@ public class UserApi {
 		Connection connect = null;
 		String chaineConnexion = "jdbc:oracle:thin:@//193.190.64.10:1522/XEPDB1";
 		// 1. test des params
-
+		/*if (id == 0) {
+			return Response.status(Status.OK).entity(new Erreur(201)).build();
+		}*/
 		// 2.A connexion à la db
 		try {
 			Class.forName("oracle.jdbc.driver.OracleDriver");
@@ -42,7 +42,7 @@ public class UserApi {
 			e.printStackTrace();
 			System.out.println("///////////////////////////////////////////");
 			e.getMessage();
-			
+
 			return Response.status(Status.OK).entity(new Erreur(1000)).build();
 		}
 		System.out.println("entrée 4 bis");
@@ -53,7 +53,7 @@ public class UserApi {
 			return Response.status(Status.OK).entity(new Erreur(1001)).build();
 		}
 		System.out.println("entrée5");
-		
+
 		// 2.requete
 
 		String sql = "SELECT * FROM Users WHERE IdUser=?";
@@ -66,10 +66,10 @@ public class UserApi {
 			prepare.setInt(1, id);
 			result = prepare.executeQuery();
 			if (result.next()) {
-				System.out.println("nom trouvé dans la db "+result.getString("name"));
+				System.out.println("nom trouvé dans la db " + result.getString("name"));
 				user = new User(result.getInt("IdUser"), result.getString("name"), result.getString("firstName"),
 						result.getString("email"), result.getString("password"), result.getString("address"));
-			}else {
+			} else {
 				return Response.status(Status.OK).entity(new Erreur(2000)).build();
 			}
 
@@ -78,10 +78,10 @@ public class UserApi {
 			return Response.status(Status.OK).entity(new Erreur(1002)).build();
 		}
 		// 3. Retourner la réponse
-				return Response.status(Status.OK).entity(user).build();
-	
+		return Response.status(Status.OK).entity(user).build();
+
 	}
-	
+
 	@Path("/create")
 	@POST
 	@Produces(MediaType.APPLICATION_JSON)
@@ -94,7 +94,21 @@ public class UserApi {
 		Connection connect = null;
 		String chaineConnexion = "jdbc:oracle:thin:@//193.190.64.10:1522/XEPDB1";
 		// 1. test des params
-		
+		/*if (name == null || name.equals("")) {
+			return Response.status(Status.OK).entity(new Erreur(201)).build();
+		}
+		if (firstname == null || firstname.equals("")) {
+			return Response.status(Status.OK).entity(new Erreur(201)).build();
+		}
+		if (email == null || email.equals("")) {
+			return Response.status(Status.OK).entity(new Erreur(201)).build();
+		}
+		if (password == null || password.equals("")) {
+			return Response.status(Status.OK).entity(new Erreur(201)).build();
+		}
+		if (address == null || address.equals("")) {
+			return Response.status(Status.OK).entity(new Erreur(201)).build();
+		}*/
 		// 2.A connexion à la db
 		try {
 			Class.forName("oracle.jdbc.driver.OracleDriver");
@@ -113,7 +127,8 @@ public class UserApi {
 		PreparedStatement prepare = null;
 		ResultSet result = null;
 		try {
-			System.out.println("valeurs des champs : "+name+" "+firstname+" "+email+" "+password+" "+address);
+			System.out.println(
+					"valeurs des champs : " + name + " " + firstname + " " + email + " " + password + " " + address);
 			System.out.println("affiche");
 			System.out.println("entrée2");
 			prepare = connect.prepareStatement(sql);
@@ -134,7 +149,7 @@ public class UserApi {
 		prepare = null;
 		result = null;
 		int id = 0;
-		try {			
+		try {
 			System.out.println("entrée3");
 			prepare = connect.prepareStatement(sql);
 			prepare.setString(1, email);
@@ -154,15 +169,17 @@ public class UserApi {
 		// 3.retourner la réponse
 		return Response.status(Status.CREATED).header("Location", "/ApiCookApp/rest/user/" + id).build();
 	}
-	
+
 	@DELETE
 	@Path("{id}")
 	public Response deleteUser(@PathParam("id") int id) {
 		Connection connect = null;
 		String chaineConnexion = "jdbc:oracle:thin:@//193.190.64.10:1522/XEPDB1";
-		//0.test param
-		
-		//1.connexion à la db
+		// 0.test param
+		/*if (id == 0) {
+			return Response.status(Status.OK).entity(new Erreur(201)).build();
+		}*/
+		// 1.connexion à la db
 		try {
 			Class.forName("oracle.jdbc.driver.OracleDriver");
 		} catch (ClassNotFoundException e) {
@@ -175,7 +192,7 @@ public class UserApi {
 			e.printStackTrace();
 			return Response.status(Status.OK).entity(new Erreur(1001)).build();
 		}
-		//2.requetes
+		// 2.requetes
 		String sql = "DELETE FROM Users WHERE IdUser=?";
 		PreparedStatement prepare = null;
 		ResultSet result = null;
@@ -184,13 +201,13 @@ public class UserApi {
 			prepare.setInt(1, id);
 			result = prepare.executeQuery();
 			prepare.close();
-			result.close();	
-		}catch (SQLException e) {
+			result.close();
+		} catch (SQLException e) {
 			e.printStackTrace();
 			return Response.status(Status.OK).entity(new Erreur(10021)).build();
 		}
 		// 3. Retourner la réponse
-				return Response.status(Status.NO_CONTENT).build();	
+		return Response.status(Status.NO_CONTENT).build();
 	}
-	
+
 }
