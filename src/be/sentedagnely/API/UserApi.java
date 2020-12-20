@@ -32,9 +32,9 @@ public class UserApi {
 		Connection connect = null;
 		String chaineConnexion = "jdbc:oracle:thin:@//193.190.64.10:1522/XEPDB1";
 		// 1. test des params
-		/*if (id == 0) {
+		if (id == 0) {
 			return Response.status(Status.OK).entity(new Erreur(201)).build();
-		}*/
+		}
 		// 2.A connexion à la db
 		try {
 			Class.forName("oracle.jdbc.driver.OracleDriver");
@@ -94,7 +94,7 @@ public class UserApi {
 		Connection connect = null;
 		String chaineConnexion = "jdbc:oracle:thin:@//193.190.64.10:1522/XEPDB1";
 		// 1. test des params
-		/*if (name == null || name.equals("")) {
+		if (name == null || name.equals("")) {
 			return Response.status(Status.OK).entity(new Erreur(201)).build();
 		}
 		if (firstname == null || firstname.equals("")) {
@@ -108,7 +108,7 @@ public class UserApi {
 		}
 		if (address == null || address.equals("")) {
 			return Response.status(Status.OK).entity(new Erreur(201)).build();
-		}*/
+		}
 		// 2.A connexion à la db
 		try {
 			Class.forName("oracle.jdbc.driver.OracleDriver");
@@ -176,9 +176,9 @@ public class UserApi {
 		Connection connect = null;
 		String chaineConnexion = "jdbc:oracle:thin:@//193.190.64.10:1522/XEPDB1";
 		// 0.test param
-		/*if (id == 0) {
+		if (id == 0) {
 			return Response.status(Status.OK).entity(new Erreur(201)).build();
-		}*/
+		}
 		// 1.connexion à la db
 		try {
 			Class.forName("oracle.jdbc.driver.OracleDriver");
