@@ -1,11 +1,11 @@
 package be.sentedagnely.POJO;
 
-public class Ustensil {
+public class Utensil {
 	private int id;
 	private String name;
 	private String type;
-	public Ustensil() {}
-	public Ustensil(int id, String name, String type) {
+	public Utensil() {}
+	public Utensil(int id, String name, String type) {
 		super();
 		this.id = id;
 		this.name = name;
