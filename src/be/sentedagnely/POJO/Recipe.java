@@ -6,15 +6,17 @@ public class Recipe {
 	
 	private int id;
 	private String name;
+	private String category;
 	private int difficulty; // difficulté de 1  à 5
 	private int totalDuration;  // le temps sera compté en minute
 	private String urlPicture;
 	
 	public Recipe() {}
-	public Recipe(int id, String name, int difficulty, int totalDuration, String urlPicture) {
+	public Recipe(int id, String name,String category, int difficulty, int totalDuration, String urlPicture) {
 		super();
 		this.id = id;
 		this.name = name;
+		this.category= category;
 		this.difficulty = difficulty;
 		this.totalDuration = totalDuration;
 		this.urlPicture = urlPicture;
@@ -49,5 +51,12 @@ public class Recipe {
 	public void setUrlPicture(String urlPicture) {
 		this.urlPicture = urlPicture;
 	}
+	public String getCategory() {
+		return category;
+	}
+	public void setCategory(String category) {
+		this.category = category;
+	}
+	
 		
 }
