@@ -82,11 +82,12 @@ public class UserApi {
 
 	}
 	
-	@Path("/find")
+	@Path("/find/{email}")
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response findByEmail(@QueryParam("email") String email) {
+	public Response findByEmail(@PathParam("email") String email) {
 		Connection connect = null;
+		System.out.println(email);
 		String chaineConnexion = "jdbc:oracle:thin:@//193.190.64.10:1522/XEPDB1";
 		// 1. test des params
 		if (email == null || email.equals("")) {
@@ -117,10 +118,11 @@ public class UserApi {
 				User user = null;
 				try {
 					System.out.println("entrée5");
-					prepare = connect.prepareStatement(sql);
+					prepare = connect.prepareStatement(sql,ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
 					prepare.setString(1, email);
 					result = prepare.executeQuery();
-					if (result.next()) {
+					System.out.println(result.getRow());
+					if (result.first()) {
 						System.out.println("nom trouvé dans la db " + result.getString("name"));
 						user = new User(result.getInt("IdUser"), result.getString("name"), result.getString("firstName"),
 								result.getString("email"), result.getString("password"), result.getString("address"));
