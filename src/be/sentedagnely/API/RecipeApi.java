@@ -66,8 +66,8 @@ public class RecipeApi {
 			prepare.setInt(1, id);
 			result = prepare.executeQuery();
 			if (result.next()) {
-				recipe = new Recipe(result.getInt("id"), result.getString("name"), result.getInt("difficulty"),
-						result.getInt("totalDuration"), result.getString("urlPicture"));
+				recipe = new Recipe(result.getInt("idRecipe"), result.getString("name"), result.getString("category"),
+						result.getInt("difficulty"), result.getInt("totalDuration"), result.getString("urlPicture"));
 			} else {
 				return Response.status(Status.OK).entity(new Erreur(2000)).build();
 			}
@@ -78,7 +78,6 @@ public class RecipeApi {
 		}
 		// 3. Retourner la réponse
 		return Response.status(Status.OK).entity(recipe).build();
-
 	}
 
 	@Path("/create")
@@ -88,7 +87,8 @@ public class RecipeApi {
 			@DefaultValue("") @FormParam("category") String category,
 			@DefaultValue("") @FormParam("difficulty") String difficulty,
 			@DefaultValue("") @FormParam("totalDuration") String totalDuration,
-			@DefaultValue("") @FormParam("urlPicture") String urlPicture,@DefaultValue("") @FormParam("idUser") String idUser) {
+			@DefaultValue("") @FormParam("urlPicture") String urlPicture,
+			@DefaultValue("") @FormParam("idUser") String idUser) {
 		System.out.println("entrée1");
 		Connection connect = null;
 		String chaineConnexion = "jdbc:oracle:thin:@//193.190.64.10:1522/XEPDB1";

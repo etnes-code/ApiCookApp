@@ -55,7 +55,7 @@ public class StepApi {
 
 		// 2.requete
 
-		String sql = "SELECT * FROM Step WHERE id=?";
+		String sql = "SELECT * FROM Step WHERE idStep=?";
 		PreparedStatement prepare = null;
 		ResultSet result = null;
 		Step step = null;
@@ -182,7 +182,7 @@ public class StepApi {
 			return Response.status(Status.OK).entity(new Erreur(1001)).build();
 		}
 		// 2.requetes
-		String sql = "DELETE FROM Step WHERE id=?";
+		String sql = "DELETE FROM Step WHERE idStep=?";
 		PreparedStatement prepare = null;
 		ResultSet result = null;
 		try {

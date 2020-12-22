@@ -1,6 +1,7 @@
 package be.sentedagnely.POJO;
 
 
+
 public class User {
 
 	private int id;
@@ -21,9 +22,6 @@ public class User {
 		this.password = password;
 		this.address = address;
 	}
-
-	
-	
 	//
 	// GET/SET
 	//
@@ -74,5 +72,6 @@ public class User {
 	public void setAddress(String adress) {
 		this.address = adress;
 	}
+	
 
 }
