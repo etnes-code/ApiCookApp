@@ -65,7 +65,7 @@ public class StepApi {
 			prepare.setInt(1, id);
 			result = prepare.executeQuery();
 			if (result.next()) {
-				step = new Step(result.getInt("idStep"), result.getInt("order"), result.getString("text"),
+				step = new Step(result.getInt("idStep"), result.getInt("orderStep"), result.getString("text"),
 						result.getInt("duration"));
 			} else {
 				return Response.status(Status.OK).entity(new Erreur(2000)).build();
@@ -116,7 +116,7 @@ public class StepApi {
 			return Response.status(Status.OK).entity(new Erreur(1001)).build();
 		}
 		// 2.B requete
-		String sql = "INSERT INTO Step(order,text,duration,idRecipe) VALUES(?,?,?,?)";
+		String sql = "INSERT INTO Step(orderStep,text,duration,idRecipe) VALUES(?,?,?,?)";
 		PreparedStatement prepare = null;
 		ResultSet result = null;
 		try {
@@ -134,7 +134,7 @@ public class StepApi {
 			return Response.status(Status.OK).entity(new Erreur(10021)).build();
 		}
 		// 2C requete recup id
-		sql = "SELECT idStep FROM Step WHERE idRecipe=? AND order=?";
+		sql = "SELECT idStep FROM Step WHERE idRecipe=? AND orderStep=?";
 		prepare = null;
 		result = null;
 		int id = 0;
