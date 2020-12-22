@@ -81,6 +81,61 @@ public class UserApi {
 		return Response.status(Status.OK).entity(user).build();
 
 	}
+	
+	@Path("/find")
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response findByEmail(@QueryParam("email") String email) {
+		Connection connect = null;
+		String chaineConnexion = "jdbc:oracle:thin:@//193.190.64.10:1522/XEPDB1";
+		// 1. test des params
+		if (email == null || email.equals("")) {
+			return Response.status(Status.OK).entity(new Erreur(201)).build();
+		}
+		// 2.A connexion à la db
+		try {
+			Class.forName("oracle.jdbc.driver.OracleDriver");
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+			System.out.println("///////////////////////////////////////////");
+			e.getMessage();
+
+			return Response.status(Status.OK).entity(new Erreur(1000)).build();
+		}
+		System.out.println("entrée 4 bis");
+		try {
+			connect = DriverManager.getConnection(chaineConnexion, Const.username, Const.pwd);
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return Response.status(Status.OK).entity(new Erreur(1001)).build();
+		}
+		// 2.requete
+
+				String sql = "SELECT * FROM Users WHERE email like ?";
+				PreparedStatement prepare = null;
+				ResultSet result = null;
+				User user = null;
+				try {
+					System.out.println("entrée5");
+					prepare = connect.prepareStatement(sql);
+					prepare.setString(1, email);
+					result = prepare.executeQuery();
+					if (result.next()) {
+						System.out.println("nom trouvé dans la db " + result.getString("name"));
+						user = new User(result.getInt("IdUser"), result.getString("name"), result.getString("firstName"),
+								result.getString("email"), result.getString("password"), result.getString("address"));
+					} else {
+						return Response.status(Status.OK).entity(new Erreur(2000)).build();
+					}
+
+				} catch (SQLException e) {
+					e.printStackTrace();
+					return Response.status(Status.OK).entity(new Erreur(1002)).build();
+				}
+				// 3. Retourner la réponse
+				return Response.status(Status.OK).entity(user).build();
+		
+	}
 
 	@Path("/create")
 	@POST
