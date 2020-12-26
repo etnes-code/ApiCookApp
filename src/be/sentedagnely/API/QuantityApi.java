@@ -18,11 +18,9 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import be.sentedagnely.POJO.Recipe;
-import be.sentedagnely.POJO.Step;
-
-@Path("step")
-public class StepApi {
+import be.sentedagnely.POJO.Quantity;
+@Path("quantity")
+public class QuantityApi {
 	@GET
 	@Path("{id}")
 	@Produces(MediaType.APPLICATION_JSON)
@@ -55,18 +53,17 @@ public class StepApi {
 
 		// 2.requete
 
-		String sql = "SELECT * FROM Step WHERE idStep=?";
+		String sql = "SELECT * FROM Quantity WHERE idQuantity";
 		PreparedStatement prepare = null;
 		ResultSet result = null;
-		Step step = null;
+		Quantity quantity = null;
 		try {
 			System.out.println("entrée5");
 			prepare = connect.prepareStatement(sql);
 			prepare.setInt(1, id);
 			result = prepare.executeQuery();
 			if (result.next()) {
-				step = new Step(result.getInt("idStep"), result.getInt("orderStep"), result.getString("text"),
-						result.getInt("duration"));
+				quantity = new Quantity(result.getInt("idQuantity"), result.getInt("quantity"));
 			} else {
 				return Response.status(Status.OK).entity(new Erreur(2000)).build();
 			}
@@ -76,30 +73,23 @@ public class StepApi {
 			return Response.status(Status.OK).entity(new Erreur(1002)).build();
 		}
 		// 3. Retourner la réponse
-		return Response.status(Status.OK).entity(step).build();
+		return Response.status(Status.OK).entity(quantity).build();
 
 	}
 
 	@Path("/create")
 	@POST
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response addRecipe(@DefaultValue("") @FormParam("order") String order,
-			@DefaultValue("") @FormParam("text") String text,
-			@DefaultValue("") @FormParam("duration") String duration,@DefaultValue("") @FormParam("idRecipe") String idRecipe) {
+	public Response addRecipe(@DefaultValue("") @FormParam("quantity") String quantity,
+			@DefaultValue("") @FormParam("idStep") String idStep) {
 		System.out.println("entrée1");
 		Connection connect = null;
 		String chaineConnexion = "jdbc:oracle:thin:@//193.190.64.10:1522/XEPDB1";
 		// 1. test des params
-		if (order == null || order.equals("")) {
+		if (quantity == null || quantity.equals("")) {
 			return Response.status(Status.OK).entity(new Erreur(201)).build();
 		}
-		if (text == null || text.equals("")) {
-			return Response.status(Status.OK).entity(new Erreur(201)).build();
-		}
-		if (duration == null || duration.equals("")) {
-			return Response.status(Status.OK).entity(new Erreur(201)).build();
-		}
-		if (idRecipe == null || idRecipe.equals("")) {
+		if (idStep == null || idStep.equals("")) {
 			return Response.status(Status.OK).entity(new Erreur(201)).build();
 		}
 		// 2.A connexion à la db
@@ -116,16 +106,14 @@ public class StepApi {
 			return Response.status(Status.OK).entity(new Erreur(1001)).build();
 		}
 		// 2.B requete
-		String sql = "INSERT INTO Step(orderStep,text,duration,idRecipe) VALUES(?,?,?,?)";
+		String sql = "INSERT INTO Quantity(quantity,idStep) VALUES(?,?)";
 		PreparedStatement prepare = null;
 		ResultSet result = null;
 		try {
 			System.out.println("entrée2");
 			prepare = connect.prepareStatement(sql);
-			prepare.setInt(1, Integer.parseInt(order));
-			prepare.setString(2, text);
-			prepare.setInt(3, Integer.parseInt(duration));
-			prepare.setInt(3, Integer.parseInt(idRecipe));	
+			prepare.setInt(1, Integer.parseInt(quantity));
+			prepare.setInt(2, Integer.parseInt(idStep));
 			result = prepare.executeQuery();
 			prepare.close();
 			result.close();
@@ -134,18 +122,18 @@ public class StepApi {
 			return Response.status(Status.OK).entity(new Erreur(10021)).build();
 		}
 		// 2C requete recup id
-		sql = "SELECT idStep FROM Step WHERE idRecipe=? AND orderStep=?";
+		sql = "SELECT idQuantity FROM Quantity WHERE idStep=? AND quantity=?";
 		prepare = null;
 		result = null;
 		int id = 0;
 		try {
 			System.out.println("entrée3");
 			prepare = connect.prepareStatement(sql);
-			prepare.setInt(1,Integer.parseInt(idRecipe));
-			prepare.setInt(2,Integer.parseInt(order));	
+			prepare.setInt(1,Integer.parseInt(idStep));
+			prepare.setInt(2,Integer.parseInt(quantity));	
 			result = prepare.executeQuery();
 			if (result.next()) {
-				id = result.getInt("idStep"); 
+				id = result.getInt("idQuantity"); 
 			} else {
 				return Response.status(Status.OK).entity(new Erreur(2001)).build();
 			}
@@ -156,7 +144,7 @@ public class StepApi {
 			return Response.status(Status.OK).entity(new Erreur(10022)).build();
 		}
 		// 3.retourner la réponse
-		return Response.status(Status.CREATED).header("Location", "/ApiCookApp/rest/step/" + id).build();
+		return Response.status(Status.CREATED).header("Location", "/ApiCookApp/rest/quantity/" + id).build();
 	}
 
 	@DELETE
@@ -182,7 +170,7 @@ public class StepApi {
 			return Response.status(Status.OK).entity(new Erreur(1001)).build();
 		}
 		// 2.requetes
-		String sql = "DELETE FROM Step WHERE idStep=?";
+		String sql = "DELETE FROM Quantity WHERE idQuantity=?";
 		PreparedStatement prepare = null;
 		ResultSet result = null;
 		try {
