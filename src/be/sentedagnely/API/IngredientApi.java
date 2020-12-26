@@ -86,7 +86,7 @@ public class IngredientApi {
 	public Response addRecipe(@DefaultValue("") @FormParam("name") String name,
 			@DefaultValue("") @FormParam("type") String type, @DefaultValue("") @FormParam("calories") String calories,
 			@DefaultValue("") @FormParam("massUnit") String massUnit,
-			@DefaultValue("") @FormParam("idQuantity") String idQuantity) {
+			@DefaultValue("") @FormParam("quantity") String quantity) {
 		System.out.println("entrée1");
 		Connection connect = null;
 		String chaineConnexion = "jdbc:oracle:thin:@//193.190.64.10:1522/XEPDB1";
@@ -103,9 +103,6 @@ public class IngredientApi {
 		if (massUnit == null || massUnit.equals("")) {
 			return Response.status(Status.OK).entity(new Erreur(201)).build();
 		}
-		if (idQuantity == null || idQuantity.equals("")) {
-			return Response.status(Status.OK).entity(new Erreur(201)).build();
-		}
 		// 2.A connexion à la db
 		try {
 			Class.forName("oracle.jdbc.driver.OracleDriver");
@@ -120,17 +117,16 @@ public class IngredientApi {
 			return Response.status(Status.OK).entity(new Erreur(1001)).build();
 		}
 		// 2.B requete
-		String sql = "INSERT INTO Ingredient(name,type,calories,massUnit,idQuantity) VALUES(?,?,?,?,?)";
+		String sql = "INSERT INTO Ingredient(name,type,calories,massUnit) VALUES(?,?,?,?,?)";
 		PreparedStatement prepare = null;
 		ResultSet result = null;
 		try {
 			System.out.println("entrée2");
 			prepare = connect.prepareStatement(sql);
-			prepare.setString(1, name );
+			prepare.setString(1, name);
 			prepare.setString(2, type);
 			prepare.setInt(3, Integer.parseInt(calories));
-			prepare.setString(4, massUnit);		
-			prepare.setInt(5, Integer.parseInt(idQuantity));
+			prepare.setString(4, massUnit);
 			result = prepare.executeQuery();
 			prepare.close();
 			result.close();
@@ -139,7 +135,7 @@ public class IngredientApi {
 			return Response.status(Status.OK).entity(new Erreur(10021)).build();
 		}
 		// 2C requete recup id
-		sql = "SELECT idIngredient FROM Ingredient WHERE name like ? AND idQuantity=?";
+		sql = "SELECT idIngredient FROM Ingredient WHERE name like ? ";
 		prepare = null;
 		result = null;
 		int id = 0;
@@ -147,7 +143,6 @@ public class IngredientApi {
 			System.out.println("entrée3");
 			prepare = connect.prepareStatement(sql);
 			prepare.setString(1, name);
-			prepare.setInt(2, Integer.parseInt(idQuantity));
 			result = prepare.executeQuery();
 			if (result.next()) {
 				id = result.getInt("idIngredient");

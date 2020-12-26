@@ -19,6 +19,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import be.sentedagnely.POJO.Quantity;
+
 @Path("quantity")
 public class QuantityApi {
 	@GET
@@ -81,7 +82,8 @@ public class QuantityApi {
 	@POST
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response addRecipe(@DefaultValue("") @FormParam("quantity") String quantity,
-			@DefaultValue("") @FormParam("idStep") String idStep) {
+			@DefaultValue("") @FormParam("idStep") String idStep,
+			@DefaultValue("") @FormParam("idIngredient") String idIngredient) {
 		System.out.println("entrée1");
 		Connection connect = null;
 		String chaineConnexion = "jdbc:oracle:thin:@//193.190.64.10:1522/XEPDB1";
@@ -106,7 +108,7 @@ public class QuantityApi {
 			return Response.status(Status.OK).entity(new Erreur(1001)).build();
 		}
 		// 2.B requete
-		String sql = "INSERT INTO Quantity(quantity,idStep) VALUES(?,?)";
+		String sql = "INSERT INTO Quantity(quantity,idStep,idIngredient) VALUES(?,?,?)";
 		PreparedStatement prepare = null;
 		ResultSet result = null;
 		try {
@@ -114,6 +116,7 @@ public class QuantityApi {
 			prepare = connect.prepareStatement(sql);
 			prepare.setInt(1, Integer.parseInt(quantity));
 			prepare.setInt(2, Integer.parseInt(idStep));
+			prepare.setInt(2, Integer.parseInt(idIngredient));
 			result = prepare.executeQuery();
 			prepare.close();
 			result.close();
@@ -122,18 +125,18 @@ public class QuantityApi {
 			return Response.status(Status.OK).entity(new Erreur(10021)).build();
 		}
 		// 2C requete recup id
-		sql = "SELECT idQuantity FROM Quantity WHERE idStep=? AND quantity=?";
+		sql = "SELECT idQuantity FROM Quantity WHERE idStep=? AND idIngredient=?";
 		prepare = null;
 		result = null;
 		int id = 0;
 		try {
 			System.out.println("entrée3");
 			prepare = connect.prepareStatement(sql);
-			prepare.setInt(1,Integer.parseInt(idStep));
-			prepare.setInt(2,Integer.parseInt(quantity));	
+			prepare.setInt(1, Integer.parseInt(idStep));
+			prepare.setInt(2, Integer.parseInt(idIngredient));
 			result = prepare.executeQuery();
 			if (result.next()) {
-				id = result.getInt("idQuantity"); 
+				id = result.getInt("idQuantity");
 			} else {
 				return Response.status(Status.OK).entity(new Erreur(2001)).build();
 			}
