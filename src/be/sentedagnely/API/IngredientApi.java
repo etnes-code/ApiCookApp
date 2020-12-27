@@ -80,6 +80,13 @@ public class IngredientApi {
 		return Response.status(Status.OK).entity(ingredient).build();
 
 	}
+	
+	@Path("/createrecipeingredient")
+	/*
+	 * param= ID INGREDIENT, IDRECIPE
+	 * 
+	 * METTRE UNE REQUETE PREPAREE INSERT INTO BLUBLIPLVOKEJ JSUIS FATIGUE BORDEL DE MERT/*/
+	
 
 	@Path("/create")
 	@POST

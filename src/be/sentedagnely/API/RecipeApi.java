@@ -88,8 +88,7 @@ public class RecipeApi {
 			@DefaultValue("") @FormParam("difficulty") String difficulty,
 			@DefaultValue("") @FormParam("totalDuration") String totalDuration,
 			@DefaultValue("") @FormParam("urlPicture") String urlPicture,
-			@DefaultValue("") @FormParam("idUser") String idUser,
-			@DefaultValue("") @FormParam("idIngredient") String idIngredient) {
+			@DefaultValue("") @FormParam("idUser") String idUser) {
 		System.out.println("entrée1");
 		Connection connect = null;
 		String chaineConnexion = "jdbc:oracle:thin:@//193.190.64.10:1522/XEPDB1";
@@ -107,9 +106,6 @@ public class RecipeApi {
 			return Response.status(Status.OK).entity(new Erreur(201)).build();
 		}
 		if (idUser == null || idUser.equals("")) {
-			return Response.status(Status.OK).entity(new Erreur(201)).build();
-		}
-		if (idIngredient == null || idIngredient.equals("")) {
 			return Response.status(Status.OK).entity(new Erreur(201)).build();
 		}
 		// 2.A connexion à la db
@@ -169,6 +165,11 @@ public class RecipeApi {
 			return Response.status(Status.OK).entity(new Erreur(10022)).build();
 		}
 		//2D ajout a la table recipe_ingredient
+		/*
+		 * 	Récupérer l'iD de recipe, ensuite dans user.update() juste après l'ajout de recette : 
+		 * 		créer l'entrée RECIPE_INGREDIENT (Faire une fonction dans IngredientApi pour créer)
+		 * 
+		 */
 		sql = "INSERT INTO RECIPE_INGREDIENT(idIngredient,idRecipe) VALUES(?,?)";
 		prepare = null;
 		result = null;
