@@ -161,7 +161,8 @@ public class IngredientApi {
 	}
 
 	@Path("/all")
-	@POST
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
 	public Response getAllIngredient() {
 		Connection connect = null;
 		String chaineConnexion = "jdbc:oracle:thin:@//193.190.64.10:1522/XEPDB1";
