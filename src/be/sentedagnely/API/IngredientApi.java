@@ -5,6 +5,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 import javax.ws.rs.DELETE;
 import javax.ws.rs.DefaultValue;
@@ -157,6 +158,45 @@ public class IngredientApi {
 		}
 		// 3.retourner la réponse
 		return Response.status(Status.CREATED).header("Location", "/ApiCookApp/rest/ingredient/" + id).build();
+	}
+
+	@Path("/all")
+	@POST
+	public Response getAllIngredient() {
+		Connection connect = null;
+		String chaineConnexion = "jdbc:oracle:thin:@//193.190.64.10:1522/XEPDB1";
+		// 2.A connexion à la db
+		try {
+			Class.forName("oracle.jdbc.driver.OracleDriver");
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+			return Response.status(Status.OK).entity(new Erreur(1000)).build();
+		}
+		try {
+			connect = DriverManager.getConnection(chaineConnexion, Const.username, Const.pwd);
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return Response.status(Status.OK).entity(new Erreur(1001)).build();
+		}
+		String sql = "SELECT * FROM Ingredient";
+		PreparedStatement prepare = null;
+		ResultSet result = null;
+		ArrayList<Ingredient> listIngredient = new ArrayList<Ingredient>();
+		try {
+			prepare = connect.prepareStatement(sql);
+			result = prepare.executeQuery();		
+			Ingredient ingredient;
+			while (result.next()) {
+				ingredient = null;
+				ingredient = new Ingredient(result.getInt("idIngredient"), result.getString("name"),
+						result.getString("type"), result.getInt("calories"), result.getString("massUnit"));
+				listIngredient.add(ingredient);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return Response.status(Status.OK).entity(new Erreur(10022)).build();
+		}
+		return Response.status(Status.OK).entity(listIngredient).build();
 	}
 
 	@DELETE
