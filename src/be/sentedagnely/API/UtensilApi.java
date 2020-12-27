@@ -151,7 +151,7 @@ public class UtensilApi {
 			return Response.status(Status.OK).entity(new Erreur(10022)).build();
 		}
 		//2.C ajouter a la table utensil_step
-		sql = "INSERT INTO Step_Utensil(idUtensil,idStep) VALUES(?,?)";
+		sql = "INSERT INTO Step_Utensil(idUtensil,id) VALUES(?,?)";
 		prepare = null;
 		result = null;
 		try {

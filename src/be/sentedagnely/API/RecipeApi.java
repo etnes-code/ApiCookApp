@@ -88,7 +88,8 @@ public class RecipeApi {
 			@DefaultValue("") @FormParam("difficulty") String difficulty,
 			@DefaultValue("") @FormParam("totalDuration") String totalDuration,
 			@DefaultValue("") @FormParam("urlPicture") String urlPicture,
-			@DefaultValue("") @FormParam("idUser") String idUser) {
+			@DefaultValue("") @FormParam("idUser") String idUser,
+			@DefaultValue("") @FormParam("idIngredient") String idIngredient) {
 		System.out.println("entrée1");
 		Connection connect = null;
 		String chaineConnexion = "jdbc:oracle:thin:@//193.190.64.10:1522/XEPDB1";
@@ -106,6 +107,9 @@ public class RecipeApi {
 			return Response.status(Status.OK).entity(new Erreur(201)).build();
 		}
 		if (idUser == null || idUser.equals("")) {
+			return Response.status(Status.OK).entity(new Erreur(201)).build();
+		}
+		if (idIngredient == null || idIngredient.equals("")) {
 			return Response.status(Status.OK).entity(new Erreur(201)).build();
 		}
 		// 2.A connexion à la db
@@ -141,6 +145,7 @@ public class RecipeApi {
 			e.printStackTrace();
 			return Response.status(Status.OK).entity(new Erreur(10021)).build();
 		}
+		
 		// 2C requete recup id
 		sql = "SELECT idRecipe FROM Recipe WHERE name like ? AND IdUser=?";
 		prepare = null;
@@ -163,6 +168,22 @@ public class RecipeApi {
 			e.printStackTrace();
 			return Response.status(Status.OK).entity(new Erreur(10022)).build();
 		}
+		//2D ajout a la table recipe_ingredient
+		sql = "INSERT INTO RECIPE_INGREDIENT(idIngredient,idRecipe) VALUES(?,?)";
+		prepare = null;
+		result = null;
+		try {
+			prepare = connect.prepareStatement(sql);
+			prepare.setInt(1, Integer.parseInt(idIngredient));
+			prepare.setInt(2, id);
+			result = prepare.executeQuery();	
+			prepare.close();
+			result.close();
+		}catch (SQLException e) {
+			e.printStackTrace();
+			return Response.status(Status.OK).entity(new Erreur(10022)).build();
+		}
+				 
 		// 3.retourner la réponse
 		return Response.status(Status.CREATED).header("Location", "/ApiCookApp/rest/recipe/" + id).build();
 	}
