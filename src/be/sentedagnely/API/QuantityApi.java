@@ -25,7 +25,7 @@ public class QuantityApi {
 	@GET
 	@Path("{id}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response getRecipeById(@PathParam("id") int id) {
+	public Response getQuantityById(@PathParam("id") int id) {
 		System.out.println("entrée4");
 		Connection connect = null;
 		String chaineConnexion = "jdbc:oracle:thin:@//193.190.64.10:1522/XEPDB1";
@@ -81,7 +81,7 @@ public class QuantityApi {
 	@Path("/create")
 	@POST
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response addRecipe(@DefaultValue("") @FormParam("quantity") String quantity,
+	public Response addQuantity(@DefaultValue("") @FormParam("quantity") String quantity,
 			@DefaultValue("") @FormParam("idStep") String idStep,
 			@DefaultValue("") @FormParam("idIngredient") String idIngredient) {
 		System.out.println("entrée1");
@@ -152,7 +152,7 @@ public class QuantityApi {
 
 	@DELETE
 	@Path("{id}")
-	public Response deleteRecipe(@PathParam("id") int id) {
+	public Response deleteQuantity(@PathParam("id") int id) {
 		Connection connect = null;
 		String chaineConnexion = "jdbc:oracle:thin:@//193.190.64.10:1522/XEPDB1";
 		// 0.test param

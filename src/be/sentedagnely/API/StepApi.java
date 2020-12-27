@@ -26,7 +26,7 @@ public class StepApi {
 	@GET
 	@Path("{id}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response getRecipeById(@PathParam("id") int id) {
+	public Response getStepById(@PathParam("id") int id) {
 		System.out.println("entrée4");
 		Connection connect = null;
 		String chaineConnexion = "jdbc:oracle:thin:@//193.190.64.10:1522/XEPDB1";
@@ -83,7 +83,7 @@ public class StepApi {
 	@Path("/create")
 	@POST
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response addRecipe(@DefaultValue("") @FormParam("order") String order,
+	public Response addStep(@DefaultValue("") @FormParam("order") String order,
 			@DefaultValue("") @FormParam("text") String text,
 			@DefaultValue("") @FormParam("duration") String duration,@DefaultValue("") @FormParam("idRecipe") String idRecipe) {
 		System.out.println("entrée1");
@@ -161,7 +161,7 @@ public class StepApi {
 
 	@DELETE
 	@Path("{id}")
-	public Response deleteRecipe(@PathParam("id") int id) {
+	public Response deleteStep(@PathParam("id") int id) {
 		Connection connect = null;
 		String chaineConnexion = "jdbc:oracle:thin:@//193.190.64.10:1522/XEPDB1";
 		// 0.test param
