@@ -13,7 +13,6 @@ public class Recipe {
 	
 	public Recipe() {}
 	public Recipe(int id, String name,String category, int difficulty, int totalDuration, String urlPicture) {
-		super();
 		this.id = id;
 		this.name = name;
 		this.category= category;

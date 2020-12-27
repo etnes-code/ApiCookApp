@@ -5,6 +5,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 import javax.ws.rs.DELETE;
 import javax.ws.rs.DefaultValue;
@@ -18,6 +19,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
+import be.sentedagnely.POJO.Ingredient;
 import be.sentedagnely.POJO.Recipe;
 import be.sentedagnely.POJO.User;
 
@@ -186,6 +188,46 @@ public class RecipeApi {
 				 
 		// 3.retourner la réponse
 		return Response.status(Status.CREATED).header("Location", "/ApiCookApp/rest/recipe/" + id).build();
+	}
+	@Path("/all")
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getAllRecipe() {
+		Connection connect = null;
+		String chaineConnexion = "jdbc:oracle:thin:@//193.190.64.10:1522/XEPDB1";
+		// 2.A connexion à la db
+		try {
+			Class.forName("oracle.jdbc.driver.OracleDriver");
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+			return Response.status(Status.OK).entity(new Erreur(1000)).build();
+		}
+		try {
+			connect = DriverManager.getConnection(chaineConnexion, Const.username, Const.pwd);
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return Response.status(Status.OK).entity(new Erreur(1001)).build();
+		}
+		//SELECT * FROM Recipe_Ingredient R JOIN Ingredient I ON (R.idRecipe = ? AND R.idIngredient = I.IdIngredient)
+		String sql = "SELECT * FROM Recipe";
+		PreparedStatement prepare = null;
+		ResultSet result = null;
+		ArrayList<Recipe> listrecipe = new ArrayList<Recipe>();
+		try {
+			prepare = connect.prepareStatement(sql);
+			result = prepare.executeQuery();		
+			Recipe recipe;
+			while (result.next()) {
+				recipe = null;
+				recipe = new Recipe(result.getInt("idRecipe"),result.getString("name"),result.getString("Category"),result.getInt("difficulty"),result.getInt("totalDuration"),result.getString("urlPicture"));
+				listrecipe.add(recipe);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return Response.status(Status.OK).entity(new Erreur(10022)).build();
+		}
+		return Response.status(Status.OK).entity(listrecipe).build();
+		
 	}
 
 	@DELETE
