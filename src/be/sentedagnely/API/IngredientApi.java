@@ -81,10 +81,10 @@ public class IngredientApi {
 
 	}
 	
-	@Path("{idRecipe}/{idIngredient}")
-	@GET
+	@Path("/createri")
+	@POST
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response addIngredientRecipe(@PathParam("idRecipe") int idRecipe,@PathParam("idIngredient") int idIngredient) {
+	public Response addIngredientRecipe(@FormParam("idRecipe") int idRecipe,@FormParam("idIngredient") int idIngredient) {
 		Connection connect = null;
 		String chaineConnexion = "jdbc:oracle:thin:@//193.190.64.10:1522/XEPDB1";
 		if (idRecipe == 0) {
