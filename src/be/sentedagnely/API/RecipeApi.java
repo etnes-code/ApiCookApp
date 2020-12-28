@@ -166,14 +166,13 @@ public class RecipeApi {
 			e.printStackTrace();
 			return Response.status(Status.OK).entity(new Erreur(10022)).build();
 		}
-<<<<<<< HEAD
 		//2D ajout a la table recipe_ingredient
 		/*
 		 * 	Récupérer l'iD de recipe, ensuite dans user.update() juste après l'ajout de recette : 
 		 * 		créer l'entrée RECIPE_INGREDIENT (Faire une fonction dans IngredientApi pour créer)
 		 * 
 		 */
-=======
+
 		/*2D ajout a la table recipe_ingredient
 >>>>>>> branch 'master' of https://github.com/etnes-code/ApiCookApp
 		sql = "INSERT INTO RECIPE_INGREDIENT(idIngredient,idRecipe) VALUES(?,?)";

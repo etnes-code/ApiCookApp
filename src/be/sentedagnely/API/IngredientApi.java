@@ -81,14 +81,6 @@ public class IngredientApi {
 
 	}
 	
-<<<<<<< HEAD
-	@Path("/createrecipeingredient")
-	/*
-	 * param= ID INGREDIENT, IDRECIPE
-	 * 
-	 * METTRE UNE REQUETE PREPAREE INSERT INTO BLUBLIPLVOKEJ JSUIS FATIGUE BORDEL DE MERT/*/
-	
-=======
 	@Path("/createri")
 	@POST
 	@Produces(MediaType.APPLICATION_JSON)
@@ -131,7 +123,6 @@ public class IngredientApi {
 		}
 		return Response.status(Status.NO_CONTENT).build();	
 	}
->>>>>>> branch 'master' of https://github.com/etnes-code/ApiCookApp
 
 	@Path("/create")
 	@POST
