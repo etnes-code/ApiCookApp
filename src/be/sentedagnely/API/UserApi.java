@@ -1,5 +1,6 @@
 package be.sentedagnely.API;
 
+import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -149,6 +150,7 @@ public class UserApi {
 			@DefaultValue("") @FormParam("address") String address) {
 		System.out.println("entrée1");
 		Connection connect = null;
+		CallableStatement callableStmt = null;
 		String chaineConnexion = "jdbc:oracle:thin:@//193.190.64.10:1522/XEPDB1";
 		// 1. test des params
 		if (name == null || name.equals("")) {
@@ -179,10 +181,25 @@ public class UserApi {
 			e.printStackTrace();
 			return Response.status(Status.OK).entity(new Erreur(1001)).build();
 		}
+		
+		try {
+		callableStmt = connect.prepareCall("{call createUser(?,?,?,?,?)}");
+		callableStmt.setString(1, name);
+        callableStmt.setString(2, firstname);
+        callableStmt.setString(3, email);
+        callableStmt.setString(4, password);
+        callableStmt.setString(5, address);
+        callableStmt.executeUpdate();
+		}catch (SQLException e) {
+			e.printStackTrace();
+			return Response.status(Status.OK).entity(new Erreur(10021)).build();
+		}
+	  
 		// 2.B requete
 		String sql = "INSERT INTO Users(name,firstName,email,password,address) VALUES(?,?,?,?,?)";
 		PreparedStatement prepare = null;
 		ResultSet result = null;
+		/*
 		try {
 			System.out.println(
 					"valeurs des champs : " + name + " " + firstname + " " + email + " " + password + " " + address);
@@ -200,7 +217,7 @@ public class UserApi {
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return Response.status(Status.OK).entity(new Erreur(10021)).build();
-		}
+		}*/
 		// 2C requete recup id
 		sql = "SELECT IdUser FROM users WHERE email like ?";
 		prepare = null;
