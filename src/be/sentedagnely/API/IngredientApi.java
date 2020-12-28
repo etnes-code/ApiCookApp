@@ -81,12 +81,57 @@ public class IngredientApi {
 
 	}
 	
+<<<<<<< HEAD
 	@Path("/createrecipeingredient")
 	/*
 	 * param= ID INGREDIENT, IDRECIPE
 	 * 
 	 * METTRE UNE REQUETE PREPAREE INSERT INTO BLUBLIPLVOKEJ JSUIS FATIGUE BORDEL DE MERT/*/
 	
+=======
+	@Path("/createri")
+	@POST
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response addIngredientRecipe(@FormParam("idRecipe") int idRecipe,@FormParam("idIngredient") int idIngredient) {
+		Connection connect = null;
+		String chaineConnexion = "jdbc:oracle:thin:@//193.190.64.10:1522/XEPDB1";
+		if (idRecipe == 0) {
+			return Response.status(Status.OK).entity(new Erreur(201)).build();
+		}
+		if (idIngredient == 0) {
+			return Response.status(Status.OK).entity(new Erreur(201)).build();
+		}
+		// 2.A connexion à la db
+		try {
+			Class.forName("oracle.jdbc.driver.OracleDriver");
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+			return Response.status(Status.OK).entity(new Erreur(1000)).build();
+		}
+		try {
+			connect = DriverManager.getConnection(chaineConnexion, Const.username, Const.pwd);
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return Response.status(Status.OK).entity(new Erreur(1001)).build();
+		}
+		String sql = "INSERT INTO Recipe_ingredient(idRecipe,idIngredient) VALUES(?,?)";
+		PreparedStatement prepare = null;
+		ResultSet result = null;
+		try {
+			System.out.println("entrée2");
+			prepare = connect.prepareStatement(sql);
+			prepare.setInt(1, idRecipe);
+			prepare.setInt(2, idIngredient);	
+			result = prepare.executeQuery();
+			prepare.close();
+			result.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return Response.status(Status.OK).entity(new Erreur(10021)).build();
+		}
+		return Response.status(Status.NO_CONTENT).build();	
+	}
+>>>>>>> branch 'master' of https://github.com/etnes-code/ApiCookApp
 
 	@Path("/create")
 	@POST
@@ -206,7 +251,6 @@ public class IngredientApi {
 		}
 		return Response.status(Status.OK).entity(listIngredient).build();
 	}
-
 	@DELETE
 	@Path("{id}")
 	public Response deleteIngredient(@PathParam("id") int id) {
