@@ -170,7 +170,7 @@ public class RecipeApi {
 			e.printStackTrace();
 			return Response.status(Status.OK).entity(new Erreur(10022)).build();
 		}
-		//2D ajout a la table recipe_ingredient
+		/*2D ajout a la table recipe_ingredient
 		sql = "INSERT INTO RECIPE_INGREDIENT(idIngredient,idRecipe) VALUES(?,?)";
 		prepare = null;
 		result = null;
@@ -184,7 +184,7 @@ public class RecipeApi {
 		}catch (SQLException e) {
 			e.printStackTrace();
 			return Response.status(Status.OK).entity(new Erreur(10022)).build();
-		}
+		}*/
 				 
 		// 3.retourner la réponse
 		return Response.status(Status.CREATED).header("Location", "/ApiCookApp/rest/recipe/" + id).build();
