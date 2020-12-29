@@ -125,7 +125,7 @@ public class StepApi {
 			prepare.setInt(1, Integer.parseInt(order));
 			prepare.setString(2, text);
 			prepare.setInt(3, Integer.parseInt(duration));
-			prepare.setInt(3, Integer.parseInt(idRecipe));	
+			prepare.setInt(4, Integer.parseInt(idRecipe));	
 			result = prepare.executeQuery();
 			prepare.close();
 			result.close();

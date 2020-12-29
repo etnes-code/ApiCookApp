@@ -157,6 +157,7 @@ public class RecipeApi {
 			result = prepare.executeQuery();
 			if (result.next()) {
 				id = result.getInt("idRecipe");
+				System.out.println("id de la recette crée "+id);
 			} else {
 				return Response.status(Status.OK).entity(new Erreur(2001)).build();
 			}
