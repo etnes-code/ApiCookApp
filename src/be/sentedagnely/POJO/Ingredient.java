@@ -1,11 +1,15 @@
 package be.sentedagnely.POJO;
 
+import java.util.HashSet;
+import java.util.Set;
+
 public class Ingredient {
 	private int id;
 	private String name;
 	private String type;
 	private int calories;
 	private String massUnit;
+	
 	public Ingredient(){}
 	public Ingredient(int id, String name, String type, int calories, String massUnit) {
 		super();
@@ -46,5 +50,5 @@ public class Ingredient {
 		this.massUnit = massUnit;
 	}
 	
-
+		
 }

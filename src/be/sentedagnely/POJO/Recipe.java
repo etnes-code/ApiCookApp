@@ -1,6 +1,7 @@
 package be.sentedagnely.POJO;
 
-
+import java.util.HashSet;
+import java.util.Set;
 
 public class Recipe {
 	
@@ -10,6 +11,8 @@ public class Recipe {
 	private int difficulty; // difficulté de 1  à 5
 	private int totalDuration;  // le temps sera compté en minute
 	private String urlPicture;
+	private Set<Ingredient>  listIngredient= new HashSet<>();
+	private Set<Step>  listStep= new HashSet<>();
 	
 	public Recipe() {}
 	public Recipe(int id, String name,String category, int difficulty, int totalDuration, String urlPicture) {
@@ -55,6 +58,29 @@ public class Recipe {
 	}
 	public void setCategory(String category) {
 		this.category = category;
+	}
+	
+	public Set<Ingredient> getListIngredient() {
+		return listIngredient;
+	}
+	public void setListIngredient(Set<Ingredient> listIngredient) {
+		this.listIngredient = listIngredient;
+	}
+	public Set<Step> getListStep() {
+		return listStep;
+	}
+	public void setListStep(Set<Step> listStep) {
+		this.listStep = listStep;
+	}
+	public void addListIngredient(Ingredient ingredient) {
+		if(!this.listIngredient.contains(ingredient)) {
+			listIngredient.add(ingredient);
+		}
+	}
+	public void addListStep(Step step) {
+		if(!this.listStep.contains(step)) {
+			listStep.add(step);
+		}
 	}
 	
 		

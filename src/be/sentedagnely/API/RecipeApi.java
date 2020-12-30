@@ -21,6 +21,7 @@ import javax.ws.rs.core.Response.Status;
 
 import be.sentedagnely.POJO.Ingredient;
 import be.sentedagnely.POJO.Recipe;
+import be.sentedagnely.POJO.Step;
 import be.sentedagnely.POJO.User;
 
 @Path("recipe")
@@ -143,7 +144,7 @@ public class RecipeApi {
 			e.printStackTrace();
 			return Response.status(Status.OK).entity(new Erreur(10021)).build();
 		}
-		
+
 		// 2C requete recup id
 		sql = "SELECT idRecipe FROM Recipe WHERE name like ? AND IdUser=?";
 		prepare = null;
@@ -157,7 +158,7 @@ public class RecipeApi {
 			result = prepare.executeQuery();
 			if (result.next()) {
 				id = result.getInt("idRecipe");
-				System.out.println("id de la recette crée "+id);
+				System.out.println("id de la recette crée " + id);
 			} else {
 				return Response.status(Status.OK).entity(new Erreur(2001)).build();
 			}
@@ -167,38 +168,37 @@ public class RecipeApi {
 			e.printStackTrace();
 			return Response.status(Status.OK).entity(new Erreur(10022)).build();
 		}
-		//2D ajout a la table recipe_ingredient
+		// 2D ajout a la table recipe_ingredient
 		/*
-		 * 	Récupérer l'iD de recipe, ensuite dans user.update() juste après l'ajout de recette : 
-		 * 		créer l'entrée RECIPE_INGREDIENT (Faire une fonction dans IngredientApi pour créer)
+		 * Récupérer l'iD de recipe, ensuite dans user.update() juste après l'ajout de
+		 * recette : créer l'entrée RECIPE_INGREDIENT (Faire une fonction dans
+		 * IngredientApi pour créer)
 		 * 
 		 */
 
-		/*2D ajout a la table recipe_ingredient
->>>>>>> branch 'master' of https://github.com/etnes-code/ApiCookApp
-		sql = "INSERT INTO RECIPE_INGREDIENT(idIngredient,idRecipe) VALUES(?,?)";
-		prepare = null;
-		result = null;
-		try {
-			prepare = connect.prepareStatement(sql);
-			prepare.setInt(1, Integer.parseInt(idIngredient));
-			prepare.setInt(2, id);
-			result = prepare.executeQuery();	
-			prepare.close();
-			result.close();
-		}catch (SQLException e) {
-			e.printStackTrace();
-			return Response.status(Status.OK).entity(new Erreur(10022)).build();
-		}*/
-				 
+		/*
+		 * 2D ajout a la table recipe_ingredient >>>>>>> branch 'master' of
+		 * https://github.com/etnes-code/ApiCookApp sql =
+		 * "INSERT INTO RECIPE_INGREDIENT(idIngredient,idRecipe) VALUES(?,?)"; prepare =
+		 * null; result = null; try { prepare = connect.prepareStatement(sql);
+		 * prepare.setInt(1, Integer.parseInt(idIngredient)); prepare.setInt(2, id);
+		 * result = prepare.executeQuery(); prepare.close(); result.close(); }catch
+		 * (SQLException e) { e.printStackTrace(); return
+		 * Response.status(Status.OK).entity(new Erreur(10022)).build(); }
+		 */
+
 		// 3.retourner la réponse
 		return Response.status(Status.CREATED).header("Location", "/ApiCookApp/rest/recipe/" + id).build();
 	}
+
 	@Path("/all")
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getAllRecipe() {
 		Connection connect = null;
+		Recipe recipe;
+		Step step;
+		Ingredient ingredient;
 		String chaineConnexion = "jdbc:oracle:thin:@//193.190.64.10:1522/XEPDB1";
 		// 2.A connexion à la db
 		try {
@@ -213,26 +213,54 @@ public class RecipeApi {
 			e.printStackTrace();
 			return Response.status(Status.OK).entity(new Erreur(1001)).build();
 		}
-		//SELECT * FROM Recipe_Ingredient R JOIN Ingredient I ON (R.idRecipe = ? AND R.idIngredient = I.IdIngredient)
+		// SELECT * FROM Recipe_Ingredient R JOIN Ingredient I ON (R.idRecipe = ? AND
+		// R.idIngredient = I.IdIngredient)
 		String sql = "SELECT * FROM Recipe";
+		String sqlIngredient = "SELECT * FROM Recipe_ingredient R INNER JOIN Ingredient I ON I.idIngredient = R.idIngredient where idRecipe=?";
+		String sqlStep="Select * FROM Step WHERE idRecipe=?";
 		PreparedStatement prepare = null;
 		ResultSet result = null;
+		ResultSet resultIngredient = null;
+		ResultSet resultStep = null;
 		ArrayList<Recipe> listrecipe = new ArrayList<Recipe>();
 		try {
+			// requete recipe
 			prepare = connect.prepareStatement(sql);
-			result = prepare.executeQuery();		
-			Recipe recipe;
+			result = prepare.executeQuery();
+
 			while (result.next()) {
 				recipe = null;
-				recipe = new Recipe(result.getInt("idRecipe"),result.getString("name"),result.getString("Category"),result.getInt("difficulty"),result.getInt("totalDuration"),result.getString("urlPicture"));
+				recipe = new Recipe(result.getInt("idRecipe"), result.getString("name"), result.getString("Category"),
+						result.getInt("difficulty"), result.getInt("totalDuration"), result.getString("urlPicture"));
+				// requete ingredient
+				prepare = connect.prepareStatement(sqlIngredient);
+				prepare.setInt(1, recipe.getId());
+				resultIngredient = prepare.executeQuery();
+
+				while (resultIngredient.next()) {
+					ingredient = null;
+					ingredient = new Ingredient(resultIngredient.getInt("idIngredient"),
+							resultIngredient.getString("name"), resultIngredient.getString("type"),
+							resultIngredient.getInt("calories"), resultIngredient.getString("massUnit"));
+					recipe.addListIngredient(ingredient);
+				}
+				prepare = connect.prepareStatement(sqlStep);
+				prepare.setInt(1, recipe.getId());
+				resultStep = prepare.executeQuery();
+				while (resultStep.next()) {
+					step=null;
+					step=new Step(resultStep.getInt("idStep"),resultStep.getInt("orderStep"),resultStep.getString("text"),resultStep.getInt("duration"));
+					recipe.addListStep(step);
+				}		
 				listrecipe.add(recipe);
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return Response.status(Status.OK).entity(new Erreur(10022)).build();
 		}
+
 		return Response.status(Status.OK).entity(listrecipe).build();
-		
+
 	}
 
 	@DELETE
