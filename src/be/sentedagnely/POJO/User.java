@@ -1,5 +1,7 @@
 package be.sentedagnely.POJO;
 
+import java.util.HashSet;
+import java.util.Set;
 
 
 public class User {
@@ -10,6 +12,7 @@ public class User {
 	private String email;
 	private String password;
 	private String address;
+	private Set<Recipe> listRecipe = new HashSet<>();
 
 	public User() {
 	}
@@ -72,6 +75,19 @@ public class User {
 	public void setAddress(String adress) {
 		this.address = adress;
 	}
+	
+	public Set<Recipe> getListRecipe() {
+		return listRecipe;
+	}
+	public void setListRecipe(Set<Recipe> listRecipe) {
+		this.listRecipe = listRecipe;
+	}
+	public void addList(Recipe recipe) {
+		if(!this.listRecipe.contains(recipe)) {
+			listRecipe.add(recipe);
+		}	
+	}
+	
 	
 
 }

@@ -20,6 +20,9 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
+import be.sentedagnely.POJO.Ingredient;
+import be.sentedagnely.POJO.Recipe;
+import be.sentedagnely.POJO.Step;
 import be.sentedagnely.POJO.User;
 
 @Path("user")
@@ -88,6 +91,9 @@ public class UserApi {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response findByEmail(@PathParam("email") String email) {
 		Connection connect = null;
+		Recipe recipe;
+		Step step;
+		Ingredient ingredient;
 		System.out.println(email);
 		String chaineConnexion = "jdbc:oracle:thin:@//193.190.64.10:1522/XEPDB1";
 		// 1. test des params
@@ -114,11 +120,18 @@ public class UserApi {
 		// 2.requete
 
 				String sql = "SELECT * FROM Users WHERE email like ?";
-				PreparedStatement prepare = null;
+				String sqlRecipe="Select * from Recipe WHERE IdUser=?";
+				String sqlIngredient = "SELECT * FROM Recipe_ingredient R INNER JOIN Ingredient I ON I.idIngredient = R.idIngredient where idRecipe=?";
+				String sqlStep="Select * FROM Step WHERE idRecipe=?";					
+				PreparedStatement prepare = null;				
 				ResultSet result = null;
+				ResultSet resultRecipe=null;
+				ResultSet resultIngredient = null;
+				ResultSet resultStep = null;
 				User user = null;
 				try {
 					System.out.println("entrée5");
+					//requete user
 					prepare = connect.prepareStatement(sql,ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
 					prepare.setString(1, email);
 					result = prepare.executeQuery();
@@ -130,7 +143,38 @@ public class UserApi {
 					} else {
 						return Response.status(Status.OK).entity(new Erreur(2000)).build();
 					}
+					// requete recipe
+					prepare = connect.prepareStatement(sqlRecipe);
+					prepare.setInt(1, user.getId());
+					result = prepare.executeQuery();
 
+					while (result.next()) {
+						recipe = null;
+						recipe = new Recipe(result.getInt("idRecipe"), result.getString("name"), result.getString("Category"),
+								result.getInt("difficulty"), result.getInt("totalDuration"), result.getString("urlPicture"));
+						// requete ingredient
+						prepare = connect.prepareStatement(sqlIngredient);
+						prepare.setInt(1, recipe.getId());
+						resultIngredient = prepare.executeQuery();
+
+						while (resultIngredient.next()) {
+							ingredient = null;
+							ingredient = new Ingredient(resultIngredient.getInt("idIngredient"),
+									resultIngredient.getString("name"), resultIngredient.getString("type"),
+									resultIngredient.getInt("calories"), resultIngredient.getString("massUnit"));
+							recipe.addListIngredient(ingredient);
+						}
+						//requete step
+						prepare = connect.prepareStatement(sqlStep);
+						prepare.setInt(1, recipe.getId());
+						resultStep = prepare.executeQuery();
+						while (resultStep.next()) {
+							step=null;
+							step=new Step(resultStep.getInt("idStep"),resultStep.getInt("orderStep"),resultStep.getString("text"),resultStep.getInt("duration"));
+							recipe.addListStep(step);
+						}
+						user.addList(recipe);						
+					}				
 				} catch (SQLException e) {
 					e.printStackTrace();
 					return Response.status(Status.OK).entity(new Erreur(1002)).build();
