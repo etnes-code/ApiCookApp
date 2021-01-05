@@ -150,7 +150,7 @@ public class UserApi {
 
 					while (result.next()) {
 						recipe = null;
-						recipe = new Recipe(result.getInt("idRecipe"), result.getString("name"), result.getString("Category"),
+						recipe = new Recipe(result.getInt("idRecipe"), result.getString("name"), result.getString("category"),
 								result.getInt("difficulty"), result.getInt("totalDuration"), result.getString("urlPicture"));
 						// requete ingredient
 						prepare = connect.prepareStatement(sqlIngredient);
