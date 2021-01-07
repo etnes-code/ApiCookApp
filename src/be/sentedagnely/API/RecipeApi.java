@@ -92,6 +92,7 @@ public class RecipeApi {
 			@DefaultValue("") @FormParam("urlPicture") String urlPicture,
 			@DefaultValue("") @FormParam("idUser") String idUser) {
 		Connection connect = null;
+		CallableStatement callableStmt = null;
 		String chaineConnexion = "jdbc:oracle:thin:@//193.190.64.10:1522/XEPDB1";
 		// 1. test des params
 		if (name == null || name.equals("")) {
@@ -127,16 +128,14 @@ public class RecipeApi {
 		PreparedStatement prepare = null;
 		ResultSet result = null;
 		try {
-			prepare = connect.prepareStatement(sql);
-			prepare.setString(1, name);
-			prepare.setString(2, category);
-			prepare.setInt(3, Integer.parseInt(difficulty));
-			prepare.setInt(4, Integer.parseInt(totalDuration));
-			prepare.setString(5, urlPicture);
-			prepare.setInt(6, Integer.parseInt(idUser));
-			result = prepare.executeQuery();
-			prepare.close();
-			result.close();
+			callableStmt = connect.prepareCall("{call createRecipe(?,?,?,?,?,?)}");
+			callableStmt.setString(1, name);
+			callableStmt.setString(2, category);
+			callableStmt.setInt(3, Integer.parseInt(difficulty));
+			callableStmt.setInt(4, Integer.parseInt(totalDuration));
+			callableStmt.setString(5, urlPicture);
+			callableStmt.setInt(6, Integer.parseInt(idUser));	
+			callableStmt.executeUpdate();			
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return Response.status(Status.OK).entity(new Erreur(10021)).build();

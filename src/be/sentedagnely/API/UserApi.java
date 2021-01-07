@@ -187,7 +187,6 @@ public class UserApi {
 			@DefaultValue("") @FormParam("email") String email,
 			@DefaultValue("") @FormParam("password") String password,
 			@DefaultValue("") @FormParam("address") String address) {
-		System.out.println("entrée1");
 		Connection connect = null;
 		CallableStatement callableStmt = null;
 		String chaineConnexion = "jdbc:oracle:thin:@//193.190.64.10:1522/XEPDB1";
@@ -234,12 +233,11 @@ public class UserApi {
 			return Response.status(Status.OK).entity(new Erreur(10021)).build();
 		}
 
-		// 2.B requete
-		String sql = "INSERT INTO Users(name,firstName,email,password,address) VALUES(?,?,?,?,?)";
+		// 2.B requete	
 		PreparedStatement prepare = null;
 		ResultSet result = null;
 		// 2C requete recup id
-		sql = "SELECT IdUser FROM users WHERE email like ?";
+		String sql = "SELECT IdUser FROM users WHERE email like ?";
 		prepare = null;
 		result = null;
 		int id = 0;

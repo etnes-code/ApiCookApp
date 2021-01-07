@@ -1,5 +1,6 @@
 package be.sentedagnely.API;
 
+import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -82,6 +83,7 @@ public class StepApi {
 			@DefaultValue("") @FormParam("text") String text,
 			@DefaultValue("") @FormParam("duration") String duration,@DefaultValue("") @FormParam("idRecipe") String idRecipe) {
 		Connection connect = null;
+		CallableStatement callableStmt = null;
 		String chaineConnexion = "jdbc:oracle:thin:@//193.190.64.10:1522/XEPDB1";
 		// 1. test des params
 		if (order == null || order.equals("")) {
@@ -114,14 +116,12 @@ public class StepApi {
 		PreparedStatement prepare = null;
 		ResultSet result = null;
 		try {
-			prepare = connect.prepareStatement(sql);
-			prepare.setInt(1, Integer.parseInt(order));
-			prepare.setString(2, text);
-			prepare.setInt(3, Integer.parseInt(duration));
-			prepare.setInt(4, Integer.parseInt(idRecipe));	
-			result = prepare.executeQuery();
-			prepare.close();
-			result.close();
+			callableStmt = connect.prepareCall("{call createStep(?,?,?,?)}");
+			callableStmt.setInt(1, Integer.parseInt(order));
+			callableStmt.setString(2, text);
+			callableStmt.setInt(3, Integer.parseInt(duration));
+			callableStmt.setInt(4, Integer.parseInt(idRecipe));
+			callableStmt.executeUpdate();						
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return Response.status(Status.OK).entity(new Erreur(10021)).build();
