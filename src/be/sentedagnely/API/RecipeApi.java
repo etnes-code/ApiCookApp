@@ -34,7 +34,6 @@ public class RecipeApi {
 	@Path("{id}")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getRecipeById(@PathParam("id") int id) {
-		System.out.println("entrée4");
 		Connection connect = null;
 		String chaineConnexion = "jdbc:oracle:thin:@//193.190.64.10:1522/XEPDB1";
 		// 1. test des params
@@ -51,14 +50,12 @@ public class RecipeApi {
 
 			return Response.status(Status.OK).entity(new Erreur(1000)).build();
 		}
-		System.out.println("entrée 4 bis");
 		try {
 			connect = DriverManager.getConnection(chaineConnexion, Const.username, Const.pwd);
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return Response.status(Status.OK).entity(new Erreur(1001)).build();
 		}
-		System.out.println("entrée5");
 
 		// 2.requete
 
@@ -67,7 +64,6 @@ public class RecipeApi {
 		ResultSet result = null;
 		Recipe recipe = null;
 		try {
-			System.out.println("entrée5");
 			prepare = connect.prepareStatement(sql);
 			prepare.setInt(1, id);
 			result = prepare.executeQuery();
@@ -95,7 +91,6 @@ public class RecipeApi {
 			@DefaultValue("") @FormParam("totalDuration") String totalDuration,
 			@DefaultValue("") @FormParam("urlPicture") String urlPicture,
 			@DefaultValue("") @FormParam("idUser") String idUser) {
-		System.out.println("entrée1");
 		Connection connect = null;
 		String chaineConnexion = "jdbc:oracle:thin:@//193.190.64.10:1522/XEPDB1";
 		// 1. test des params
@@ -132,7 +127,6 @@ public class RecipeApi {
 		PreparedStatement prepare = null;
 		ResultSet result = null;
 		try {
-			System.out.println("entrée2");
 			prepare = connect.prepareStatement(sql);
 			prepare.setString(1, name);
 			prepare.setString(2, category);
@@ -147,14 +141,12 @@ public class RecipeApi {
 			e.printStackTrace();
 			return Response.status(Status.OK).entity(new Erreur(10021)).build();
 		}
-
 		// 2C requete recup id
 		sql = "SELECT idRecipe FROM Recipe WHERE name like ? AND IdUser=?";
 		prepare = null;
 		result = null;
 		int id = 0;
 		try {
-			System.out.println("entrée3");
 			prepare = connect.prepareStatement(sql);
 			prepare.setString(1, name);
 			prepare.setInt(2, Integer.parseInt(idUser));
@@ -170,25 +162,7 @@ public class RecipeApi {
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return Response.status(Status.OK).entity(new Erreur(10022)).build();
-		}
-		// 2D ajout a la table recipe_ingredient
-		/*
-		 * Récupérer l'iD de recipe, ensuite dans user.update() juste après l'ajout de
-		 * recette : créer l'entrée RECIPE_INGREDIENT (Faire une fonction dans
-		 * IngredientApi pour créer)
-		 * 
-		 */
-
-		/*
-		 * 2D ajout a la table recipe_ingredient >>>>>>> branch 'master' of
-		 * https://github.com/etnes-code/ApiCookApp sql =
-		 * "INSERT INTO RECIPE_INGREDIENT(idIngredient,idRecipe) VALUES(?,?)"; prepare =
-		 * null; result = null; try { prepare = connect.prepareStatement(sql);
-		 * prepare.setInt(1, Integer.parseInt(idIngredient)); prepare.setInt(2, id);
-		 * result = prepare.executeQuery(); prepare.close(); result.close(); }catch
-		 * (SQLException e) { e.printStackTrace(); return
-		 * Response.status(Status.OK).entity(new Erreur(10022)).build(); }
-		 */
+		}	
 
 		// 3.retourner la réponse
 		return Response.status(Status.CREATED).header("Location", "/ApiCookApp/rest/recipe/" + id).build();
@@ -216,8 +190,6 @@ public class RecipeApi {
 			e.printStackTrace();
 			return Response.status(Status.OK).entity(new Erreur(1001)).build();
 		}
-		// SELECT * FROM Recipe_Ingredient R JOIN Ingredient I ON (R.idRecipe = ? AND
-		// R.idIngredient = I.IdIngredient)
 		String sql = "SELECT * FROM Recipe ORDER BY name asc";
 		String sqlIngredient = "SELECT * FROM Recipe_ingredient R INNER JOIN Ingredient I ON I.idIngredient = R.idIngredient where idRecipe=?";
 		String sqlStep = "Select * FROM Step WHERE idRecipe=? ORDER BY orderStep ASC";

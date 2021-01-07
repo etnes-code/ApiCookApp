@@ -32,7 +32,6 @@ public class UserApi {
 	@Path("{id}")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getUserById(@PathParam("id") int id) {
-		System.out.println("entrée4");
 		Connection connect = null;
 		String chaineConnexion = "jdbc:oracle:thin:@//193.190.64.10:1522/XEPDB1";
 		// 1. test des params
@@ -49,14 +48,12 @@ public class UserApi {
 
 			return Response.status(Status.OK).entity(new Erreur(1000)).build();
 		}
-		System.out.println("entrée 4 bis");
 		try {
 			connect = DriverManager.getConnection(chaineConnexion, Const.username, Const.pwd);
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return Response.status(Status.OK).entity(new Erreur(1001)).build();
 		}
-		System.out.println("entrée5");
 
 		// 2.requete
 
@@ -65,7 +62,6 @@ public class UserApi {
 		ResultSet result = null;
 		User user = null;
 		try {
-			System.out.println("entrée5");
 			prepare = connect.prepareStatement(sql);
 			prepare.setInt(1, id);
 			result = prepare.executeQuery();
@@ -110,7 +106,6 @@ public class UserApi {
 
 			return Response.status(Status.OK).entity(new Erreur(1000)).build();
 		}
-		System.out.println("entrée 4 bis");
 		try {
 			connect = DriverManager.getConnection(chaineConnexion, Const.username, Const.pwd);
 		} catch (SQLException e) {
@@ -130,7 +125,6 @@ public class UserApi {
 		ResultSet resultStep = null;
 		User user = null;
 		try {
-			System.out.println("entrée5");
 			// requete user
 			prepare = connect.prepareStatement(sql, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
 			prepare.setString(1, email);
@@ -244,27 +238,14 @@ public class UserApi {
 		String sql = "INSERT INTO Users(name,firstName,email,password,address) VALUES(?,?,?,?,?)";
 		PreparedStatement prepare = null;
 		ResultSet result = null;
-		/*
-		 * try { System.out.println( "valeurs des champs : " + name + " " + firstname +
-		 * " " + email + " " + password + " " + address); System.out.println("affiche");
-		 * System.out.println("entrée2"); prepare = connect.prepareStatement(sql);
-		 * prepare.setString(1, name); prepare.setString(2, firstname);
-		 * prepare.setString(3, email); prepare.setString(4, password);
-		 * prepare.setString(5, address); result = prepare.executeQuery();
-		 * prepare.close(); result.close(); } catch (SQLException e) {
-		 * e.printStackTrace(); return Response.status(Status.OK).entity(new
-		 * Erreur(10021)).build(); }
-		 */
 		// 2C requete recup id
 		sql = "SELECT IdUser FROM users WHERE email like ?";
 		prepare = null;
 		result = null;
 		int id = 0;
 		try {
-			System.out.println("entrée3");
 			prepare = connect.prepareStatement(sql);
 			prepare.setString(1, email);
-
 			result = prepare.executeQuery();
 			if (result.next()) {
 				id = result.getInt("IdUser");

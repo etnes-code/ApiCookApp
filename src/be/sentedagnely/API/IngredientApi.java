@@ -45,15 +45,12 @@ public class IngredientApi {
 
 			return Response.status(Status.OK).entity(new Erreur(1000)).build();
 		}
-		System.out.println("entrée 4 bis");
 		try {
 			connect = DriverManager.getConnection(chaineConnexion, Const.username, Const.pwd);
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return Response.status(Status.OK).entity(new Erreur(1001)).build();
 		}
-		System.out.println("entrée5");
-
 		// 2.requete
 
 		String sql = "SELECT * FROM Ingredient WHERE idIngredient=?";
@@ -61,7 +58,6 @@ public class IngredientApi {
 		ResultSet result = null;
 		Ingredient ingredient = null;
 		try {
-			System.out.println("entrée5");
 			prepare = connect.prepareStatement(sql);
 			prepare.setInt(1, id);
 			result = prepare.executeQuery();
@@ -110,7 +106,6 @@ public class IngredientApi {
 		PreparedStatement prepare = null;
 		ResultSet result = null;
 		try {
-			System.out.println("entrée2");
 			prepare = connect.prepareStatement(sql);
 			prepare.setInt(1, idRecipe);
 			prepare.setInt(2, idIngredient);	
@@ -131,7 +126,6 @@ public class IngredientApi {
 			@DefaultValue("") @FormParam("type") String type, @DefaultValue("") @FormParam("calories") String calories,
 			@DefaultValue("") @FormParam("massUnit") String massUnit,
 			@DefaultValue("") @FormParam("quantity") String quantity) {
-		System.out.println("entrée1");
 		Connection connect = null;
 		String chaineConnexion = "jdbc:oracle:thin:@//193.190.64.10:1522/XEPDB1";
 		// 1. test des params
@@ -165,7 +159,6 @@ public class IngredientApi {
 		PreparedStatement prepare = null;
 		ResultSet result = null;
 		try {
-			System.out.println("entrée2");
 			prepare = connect.prepareStatement(sql);
 			prepare.setString(1, name);
 			prepare.setString(2, type);
@@ -184,7 +177,6 @@ public class IngredientApi {
 		result = null;
 		int id = 0;
 		try {
-			System.out.println("entrée3");
 			prepare = connect.prepareStatement(sql);
 			prepare.setString(1, name);
 			result = prepare.executeQuery();

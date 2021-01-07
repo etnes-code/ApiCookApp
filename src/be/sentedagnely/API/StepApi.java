@@ -27,7 +27,6 @@ public class StepApi {
 	@Path("{id}")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getStepById(@PathParam("id") int id) {
-		System.out.println("entrée4");
 		Connection connect = null;
 		String chaineConnexion = "jdbc:oracle:thin:@//193.190.64.10:1522/XEPDB1";
 		// 1. test des params
@@ -51,16 +50,12 @@ public class StepApi {
 			e.printStackTrace();
 			return Response.status(Status.OK).entity(new Erreur(1001)).build();
 		}
-		System.out.println("entrée5");
-
 		// 2.requete
-
 		String sql = "SELECT * FROM Step WHERE idStep=?";
 		PreparedStatement prepare = null;
 		ResultSet result = null;
 		Step step = null;
 		try {
-			System.out.println("entrée5");
 			prepare = connect.prepareStatement(sql);
 			prepare.setInt(1, id);
 			result = prepare.executeQuery();
@@ -86,7 +81,6 @@ public class StepApi {
 	public Response addStep(@DefaultValue("") @FormParam("order") String order,
 			@DefaultValue("") @FormParam("text") String text,
 			@DefaultValue("") @FormParam("duration") String duration,@DefaultValue("") @FormParam("idRecipe") String idRecipe) {
-		System.out.println("entrée1");
 		Connection connect = null;
 		String chaineConnexion = "jdbc:oracle:thin:@//193.190.64.10:1522/XEPDB1";
 		// 1. test des params
@@ -120,7 +114,6 @@ public class StepApi {
 		PreparedStatement prepare = null;
 		ResultSet result = null;
 		try {
-			System.out.println("entrée2");
 			prepare = connect.prepareStatement(sql);
 			prepare.setInt(1, Integer.parseInt(order));
 			prepare.setString(2, text);
@@ -139,7 +132,6 @@ public class StepApi {
 		result = null;
 		int id = 0;
 		try {
-			System.out.println("entrée3");
 			prepare = connect.prepareStatement(sql);
 			prepare.setInt(1,Integer.parseInt(idRecipe));
 			prepare.setInt(2,Integer.parseInt(order));	
