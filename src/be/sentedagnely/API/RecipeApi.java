@@ -7,6 +7,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.ws.rs.DELETE;
 import javax.ws.rs.DefaultValue;
@@ -223,7 +225,7 @@ public class RecipeApi {
 		ResultSet result = null;
 		ResultSet resultIngredient = null;
 		ResultSet resultStep = null;
-		ArrayList<Recipe> listrecipe = new ArrayList<Recipe>();
+		Set<Recipe> listrecipe = new HashSet<Recipe>();
 		try {
 			// requete recipe
 			prepare = connect.prepareStatement(sql);
@@ -231,8 +233,9 @@ public class RecipeApi {
 
 			while (result.next()) {
 				recipe = null;
-				recipe = new Recipe(result.getInt("idRecipe"), result.getString("name"), result.getString("Category"),
+				recipe = new Recipe(result.getInt("idRecipe"), result.getString("name"), result.getString("category"),
 						result.getInt("difficulty"), result.getInt("totalDuration"), result.getString("urlPicture"));
+				System.out.println("API RECIPE- getALL : CATEGORY" + recipe.getCategory());
 				// requete ingredient
 				prepare = connect.prepareStatement(sqlIngredient);
 				prepare.setInt(1, recipe.getId());
@@ -306,7 +309,7 @@ public class RecipeApi {
 			callableStmt.setInt(1, Integer.parseInt(idRecipe));
 			callableStmt.setString(2, name);
 			callableStmt.setString(3, category);
-			callableStmt.setInt(3, Integer.parseInt(difficulty));
+			callableStmt.setInt(4, Integer.parseInt(difficulty));
 			callableStmt.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();

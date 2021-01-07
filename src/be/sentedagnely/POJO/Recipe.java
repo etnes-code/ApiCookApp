@@ -7,9 +7,9 @@ public class Recipe {
 	
 	private int id;
 	private String name;
-	private String category;
 	private int difficulty; // difficulté de 1  à 5
 	private int totalDuration;  // le temps sera compté en minute
+	private String category;
 	private String urlPicture;
 	private Set<Ingredient>  listIngredient= new HashSet<>();
 	private Set<Step>  listStep= new HashSet<>();
