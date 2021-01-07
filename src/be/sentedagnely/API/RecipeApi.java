@@ -206,7 +206,6 @@ public class RecipeApi {
 				recipe = null;
 				recipe = new Recipe(result.getInt("idRecipe"), result.getString("name"), result.getString("category"),
 						result.getInt("difficulty"), result.getInt("totalDuration"), result.getString("urlPicture"));
-				System.out.println("API RECIPE- getALL : CATEGORY" + recipe.getCategory());
 				// requete ingredient
 				prepare = connect.prepareStatement(sqlIngredient);
 				prepare.setInt(1, recipe.getId());

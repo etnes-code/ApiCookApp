@@ -20,7 +20,6 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import be.sentedagnely.POJO.Ingredient;
-import be.sentedagnely.POJO.Quantity;
 
 @Path("ingredient")
 public class IngredientApi {
