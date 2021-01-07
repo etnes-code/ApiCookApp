@@ -214,7 +214,7 @@ public class IngredientApi {
 			e.printStackTrace();
 			return Response.status(Status.OK).entity(new Erreur(1001)).build();
 		}
-		String sql = "SELECT * FROM Ingredient";
+		String sql = "SELECT * FROM Ingredient ORDER BY name ASC";
 		PreparedStatement prepare = null;
 		ResultSet result = null;
 		ArrayList<Ingredient> listIngredient = new ArrayList<Ingredient>();
