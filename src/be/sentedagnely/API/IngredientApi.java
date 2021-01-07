@@ -29,7 +29,6 @@ public class IngredientApi {
 	public Response getIngredientById(@PathParam("id") int id) {
 		System.out.println("entrée4");
 		Connection connect = null;
-		String chaineConnexion = "jdbc:oracle:thin:@//193.190.64.10:1522/XEPDB1";
 		// 1. test des params
 		if (id == 0) {
 			return Response.status(Status.OK).entity(new Erreur(201)).build();
@@ -45,7 +44,7 @@ public class IngredientApi {
 			return Response.status(Status.OK).entity(new Erreur(1000)).build();
 		}
 		try {
-			connect = DriverManager.getConnection(chaineConnexion, Const.username, Const.pwd);
+			connect = DriverManager.getConnection(Const.chaineConnexion, Const.username, Const.pwd);
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return Response.status(Status.OK).entity(new Erreur(1001)).build();
@@ -81,7 +80,6 @@ public class IngredientApi {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response addIngredientRecipe(@FormParam("idRecipe") int idRecipe,@FormParam("idIngredient") int idIngredient) {
 		Connection connect = null;
-		String chaineConnexion = "jdbc:oracle:thin:@//193.190.64.10:1522/XEPDB1";
 		if (idRecipe == 0) {
 			return Response.status(Status.OK).entity(new Erreur(201)).build();
 		}
@@ -96,7 +94,7 @@ public class IngredientApi {
 			return Response.status(Status.OK).entity(new Erreur(1000)).build();
 		}
 		try {
-			connect = DriverManager.getConnection(chaineConnexion, Const.username, Const.pwd);
+			connect = DriverManager.getConnection(Const.chaineConnexion, Const.username, Const.pwd);
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return Response.status(Status.OK).entity(new Erreur(1001)).build();
@@ -126,7 +124,6 @@ public class IngredientApi {
 			@DefaultValue("") @FormParam("massUnit") String massUnit,
 			@DefaultValue("") @FormParam("quantity") String quantity) {
 		Connection connect = null;
-		String chaineConnexion = "jdbc:oracle:thin:@//193.190.64.10:1522/XEPDB1";
 		// 1. test des params
 		if (name == null || name.equals("")) {
 			return Response.status(Status.OK).entity(new Erreur(201)).build();
@@ -148,7 +145,7 @@ public class IngredientApi {
 			return Response.status(Status.OK).entity(new Erreur(1000)).build();
 		}
 		try {
-			connect = DriverManager.getConnection(chaineConnexion, Const.username, Const.pwd);
+			connect = DriverManager.getConnection(Const.chaineConnexion, Const.username, Const.pwd);
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return Response.status(Status.OK).entity(new Erreur(1001)).build();
@@ -199,7 +196,6 @@ public class IngredientApi {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getAllIngredient() {
 		Connection connect = null;
-		String chaineConnexion = "jdbc:oracle:thin:@//193.190.64.10:1522/XEPDB1";
 		// 2.A connexion à la db
 		try {
 			Class.forName("oracle.jdbc.driver.OracleDriver");
@@ -208,7 +204,7 @@ public class IngredientApi {
 			return Response.status(Status.OK).entity(new Erreur(1000)).build();
 		}
 		try {
-			connect = DriverManager.getConnection(chaineConnexion, Const.username, Const.pwd);
+			connect = DriverManager.getConnection(Const.chaineConnexion, Const.username, Const.pwd);
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return Response.status(Status.OK).entity(new Erreur(1001)).build();
@@ -237,7 +233,6 @@ public class IngredientApi {
 	@Path("{id}")
 	public Response deleteIngredient(@PathParam("id") int id) {
 		Connection connect = null;
-		String chaineConnexion = "jdbc:oracle:thin:@//193.190.64.10:1522/XEPDB1";
 		// 0.test param
 		if (id == 0) {
 			return Response.status(Status.OK).entity(new Erreur(201)).build();
@@ -250,7 +245,7 @@ public class IngredientApi {
 			return Response.status(Status.OK).entity(new Erreur(1000)).build();
 		}
 		try {
-			connect = DriverManager.getConnection(chaineConnexion, Const.username, Const.pwd);
+			connect = DriverManager.getConnection(Const.chaineConnexion, Const.username, Const.pwd);
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return Response.status(Status.OK).entity(new Erreur(1001)).build();

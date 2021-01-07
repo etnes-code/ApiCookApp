@@ -29,7 +29,6 @@ public class StepApi {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getStepById(@PathParam("id") int id) {
 		Connection connect = null;
-		String chaineConnexion = "jdbc:oracle:thin:@//193.190.64.10:1522/XEPDB1";
 		// 1. test des params
 		if (id == 0) {
 			return Response.status(Status.OK).entity(new Erreur(201)).build();
@@ -46,7 +45,7 @@ public class StepApi {
 		}
 		System.out.println("entrée 4 bis");
 		try {
-			connect = DriverManager.getConnection(chaineConnexion, Const.username, Const.pwd);
+			connect = DriverManager.getConnection(Const.chaineConnexion, Const.username, Const.pwd);
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return Response.status(Status.OK).entity(new Erreur(1001)).build();
@@ -84,7 +83,6 @@ public class StepApi {
 			@DefaultValue("") @FormParam("duration") String duration,@DefaultValue("") @FormParam("idRecipe") String idRecipe) {
 		Connection connect = null;
 		CallableStatement callableStmt = null;
-		String chaineConnexion = "jdbc:oracle:thin:@//193.190.64.10:1522/XEPDB1";
 		// 1. test des params
 		if (order == null || order.equals("")) {
 			return Response.status(Status.OK).entity(new Erreur(201)).build();
@@ -106,7 +104,7 @@ public class StepApi {
 			return Response.status(Status.OK).entity(new Erreur(1000)).build();
 		}
 		try {
-			connect = DriverManager.getConnection(chaineConnexion, Const.username, Const.pwd);
+			connect = DriverManager.getConnection(Const.chaineConnexion, Const.username, Const.pwd);
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return Response.status(Status.OK).entity(new Erreur(1001)).build();
@@ -155,7 +153,6 @@ public class StepApi {
 	@Path("{id}")
 	public Response deleteStep(@PathParam("id") int id) {
 		Connection connect = null;
-		String chaineConnexion = "jdbc:oracle:thin:@//193.190.64.10:1522/XEPDB1";
 		// 0.test param
 		if (id == 0) {
 			return Response.status(Status.OK).entity(new Erreur(201)).build();
@@ -168,7 +165,7 @@ public class StepApi {
 			return Response.status(Status.OK).entity(new Erreur(1000)).build();
 		}
 		try {
-			connect = DriverManager.getConnection(chaineConnexion, Const.username, Const.pwd);
+			connect = DriverManager.getConnection(Const.chaineConnexion, Const.username, Const.pwd);
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return Response.status(Status.OK).entity(new Erreur(1001)).build();
