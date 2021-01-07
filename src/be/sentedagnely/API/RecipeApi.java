@@ -1,5 +1,6 @@
 package be.sentedagnely.API;
 
+import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -215,9 +216,9 @@ public class RecipeApi {
 		}
 		// SELECT * FROM Recipe_Ingredient R JOIN Ingredient I ON (R.idRecipe = ? AND
 		// R.idIngredient = I.IdIngredient)
-		String sql = "SELECT * FROM Recipe";
+		String sql = "SELECT * FROM Recipe ORDER BY name asc";
 		String sqlIngredient = "SELECT * FROM Recipe_ingredient R INNER JOIN Ingredient I ON I.idIngredient = R.idIngredient where idRecipe=?";
-		String sqlStep="Select * FROM Step WHERE idRecipe=?";
+		String sqlStep = "Select * FROM Step WHERE idRecipe=? ORDER BY orderStep ASC";
 		PreparedStatement prepare = null;
 		ResultSet result = null;
 		ResultSet resultIngredient = null;
@@ -248,10 +249,11 @@ public class RecipeApi {
 				prepare.setInt(1, recipe.getId());
 				resultStep = prepare.executeQuery();
 				while (resultStep.next()) {
-					step=null;
-					step=new Step(resultStep.getInt("idStep"),resultStep.getInt("orderStep"),resultStep.getString("text"),resultStep.getInt("duration"));
+					step = null;
+					step = new Step(resultStep.getInt("idStep"), resultStep.getInt("orderStep"),
+							resultStep.getString("text"), resultStep.getInt("duration"));
 					recipe.addListStep(step);
-				}		
+				}
 				listrecipe.add(recipe);
 			}
 		} catch (SQLException e) {
@@ -261,6 +263,57 @@ public class RecipeApi {
 
 		return Response.status(Status.OK).entity(listrecipe).build();
 
+	}
+
+	@POST
+	@Path("/update")
+	public Response updateRecipe(@DefaultValue("") @FormParam("nameRecipe") String name,
+			@DefaultValue("") @FormParam("category") String category,
+			@DefaultValue("") @FormParam("difficulty") String difficulty,
+			@DefaultValue("") @FormParam("idRecipe") String idRecipe) {
+		Connection connect = null;
+		CallableStatement callableStmt = null;
+		String chaineConnexion = "jdbc:oracle:thin:@//193.190.64.10:1522/XEPDB1";
+		// 1. test des params
+		if (name == null || name.equals("")) {
+			return Response.status(Status.OK).entity(new Erreur(201)).build();
+		}
+		if (category == null || category.equals("")) {
+			return Response.status(Status.OK).entity(new Erreur(201)).build();
+		}
+		if (difficulty == null || difficulty.equals("")) {
+			return Response.status(Status.OK).entity(new Erreur(201)).build();
+		}
+		if (idRecipe == null || idRecipe.equals("")) {
+			return Response.status(Status.OK).entity(new Erreur(201)).build();
+		}
+		// 2.A connexion à la db
+		try {
+			Class.forName("oracle.jdbc.driver.OracleDriver");
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+			return Response.status(Status.OK).entity(new Erreur(1000)).build();
+		}
+		try {
+			connect = DriverManager.getConnection(chaineConnexion, Const.username, Const.pwd);
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return Response.status(Status.OK).entity(new Erreur(1001)).build();
+		}
+		//appel de la procédure 
+		try {
+			callableStmt = connect.prepareCall("{call updateRecipe(?,?,?,?)}");
+			callableStmt.setInt(1, Integer.parseInt(idRecipe));
+			callableStmt.setString(2, name);
+			callableStmt.setString(3, category);
+			callableStmt.setInt(3, Integer.parseInt(difficulty));
+			callableStmt.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return Response.status(Status.OK).entity(new Erreur(10021)).build();
+		}
+		// 3. Retourner la réponse
+		return Response.status(Status.NO_CONTENT).build();	
 	}
 
 	@DELETE
